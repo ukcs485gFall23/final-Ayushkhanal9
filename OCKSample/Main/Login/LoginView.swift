@@ -28,21 +28,22 @@ struct LoginView: View {
     @State var password = ""
     @State var firstName: String = ""
     @State var lastName: String = ""
+    @State var email: String = ""   // added email 
     @State var signupLoginSegmentValue = 0
 
     var body: some View {
         VStack {
             // Change the title to the name of your application
-            Text("CareKit Sample App")
+            Text("IOS Healthcare App")
                 .font(.largeTitle)
-                .foregroundColor(.white)
+                .foregroundColor(.black)
                 .padding()
             // Change this image to something that represents your application
-            Image("exercise.jpg")
+            Image("UKhealth")
                 .resizable()
                 .frame(width: 150, height: 150, alignment: .center)
                 .clipShape(Circle())
-                .overlay(Circle().stroke(Color(.white), lineWidth: 4))
+                .overlay(Circle().stroke(Color(.purple), lineWidth: 4))
                 .shadow(radius: 10)
                 .padding()
 
@@ -71,22 +72,23 @@ struct LoginView: View {
                     .background(.white)
                     .cornerRadius(20.0)
                     .shadow(radius: 10.0, x: 20, y: 10)
-
-                switch signupLoginSegmentValue {
-                case 1:
+                // 1 leads to signup screen and 0 leads to user
+                if signupLoginSegmentValue == 1 {
                     TextField("First Name", text: $firstName)
                         .padding()
                         .background(.white)
                         .cornerRadius(20.0)
                         .shadow(radius: 10.0, x: 20, y: 10)
-
                     TextField("Last Name", text: $lastName)
                         .padding()
                         .background(.white)
                         .cornerRadius(20.0)
                         .shadow(radius: 10.0, x: 20, y: 10)
-                default:
-                    EmptyView()
+                    TextField("Email", text: $email)
+                        .padding()
+                        .background(.white)
+                        .cornerRadius(20.0)
+                        .shadow(radius: 10.0, x: 20, y: 10)
                 }
             }.padding()
 
@@ -103,7 +105,8 @@ struct LoginView: View {
                                                username: usersname,
                                                password: password,
                                                firstName: firstName,
-                                               lastName: lastName)
+                                               lastName: lastName,
+                                               email: email)
                     }
                 default:
                     Task {
@@ -127,7 +130,7 @@ struct LoginView: View {
                         .frame(width: 300)
                 }
             })
-            .background(Color(.green))
+            .background(Color(.blue))
             .cornerRadius(15)
 
             Button(action: {
@@ -139,14 +142,14 @@ struct LoginView: View {
                 case 0:
                     Text("Login Anonymously")
                         .font(.headline)
-                        .foregroundColor(.white)
+                        .foregroundColor(.gray)
                         .padding()
                         .frame(width: 300)
                 default:
                     EmptyView()
                 }
             })
-            .background(Color(.lightGray))
+            .background(Color(.gray))
             .cornerRadius(15)
 
             // If an error occurs show it on the screen
