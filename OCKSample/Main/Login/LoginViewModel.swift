@@ -12,6 +12,10 @@ import ParseCareKit
 import ParseSwift
 import os.log
 import WatchConnectivity
+import Foundation
+import UIKit
+
+// swiftlint:disable function_parameter_count
 
 class LoginViewModel: ObservableObject {
 
@@ -149,7 +153,8 @@ class LoginViewModel: ObservableObject {
                 username: String,
                 password: String,
                 firstName: String,
-                lastName: String) async {
+                lastName: String,
+                email: String) async {
         do {
             guard try await PCKUtility.isServerAvailable() else {
                 Logger.login.error("Server health is not \"ok\"")
@@ -159,6 +164,7 @@ class LoginViewModel: ObservableObject {
             // Set any properties you want saved on the user befor logging in.
             newUser.username = username.lowercased()
             newUser.password = password
+            newUser.email = email  // email property
             let user = try await newUser.signup()
             Logger.login.info("Parse signup successful: \(user)")
             let patient = try await savePatientAfterSignUp(type,
