@@ -89,14 +89,17 @@ extension OCKStore {
                                interval: DateComponents(day: 2))
         ])
 
-        var doxylamine = OCKTask(id: TaskID.doxylamine,
+        var doxylamine = OCKTask(id: TaskID.doxylamine,       //doxylamine
                                  title: "Take Doxylamine",
                                  carePlanUUID: nil,
                                  schedule: schedule)
         doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
         doxylamine.asset = "pills.fill"
+        doxylamine.card = .checklist
+        
+        
 
-        let nauseaSchedule = OCKSchedule(composing: [
+        let nauseaSchedule = OCKSchedule(composing: [         //nausea
             OCKScheduleElement(start: beforeBreakfast,
                                end: nil,
                                interval: DateComponents(day: 1),
@@ -111,8 +114,9 @@ extension OCKStore {
         nausea.impactsAdherence = false
         nausea.instructions = "Tap the button below anytime you experience nausea."
         nausea.asset = "bed.double"
+        nausea.card = .button
 
-        let kegelElement = OCKScheduleElement(start: beforeBreakfast,
+        let kegelElement = OCKScheduleElement(start: beforeBreakfast,    //kegel
                                               end: nil,
                                               interval: DateComponents(day: 2))
         let kegelSchedule = OCKSchedule(composing: [kegelElement])
@@ -122,8 +126,9 @@ extension OCKStore {
                              schedule: kegelSchedule)
         kegels.impactsAdherence = true
         kegels.instructions = "Perform kegel exercies"
+        kegels.card = .simple
 
-        let stretchElement = OCKScheduleElement(start: beforeBreakfast,
+        let stretchElement = OCKScheduleElement(start: beforeBreakfast,   //stretch
                                                 end: nil,
                                                 interval: DateComponents(day: 1))
         let stretchSchedule = OCKSchedule(composing: [stretchElement])
@@ -133,6 +138,7 @@ extension OCKStore {
                               schedule: stretchSchedule)
         stretch.impactsAdherence = true
         stretch.asset = "figure.walk"
+        stretch.card = .instruction
 
         try await addTasksIfNotPresent([nausea, doxylamine, kegels, stretch])
 

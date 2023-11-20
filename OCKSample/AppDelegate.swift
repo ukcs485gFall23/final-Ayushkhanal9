@@ -39,7 +39,7 @@ import WatchConnectivity
 class AppDelegate: UIResponder, ObservableObject {
     // MARK: Public read/write properties
 
-    @Published var isFirstTimeLogin = false {    //from class
+    @Published var isFirstTimeLogin = false {    // from class
         willSet {
             DispatchQueue.main.async {
                 self.objectWillChange.send()
