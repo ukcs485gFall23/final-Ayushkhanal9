@@ -14,7 +14,7 @@ import ParseSwift
 import ParseCareKit
 
 extension OCKStore {
-    
+
     /**
      Adds an `OCKAnyCarePlan`*asynchronously*  to `OCKStore` if it has not been added already.
      - parameter carePlans: The array of `OCKAnyCarePlan`'s to be added to the `OCKStore`.
