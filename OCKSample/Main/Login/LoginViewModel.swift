@@ -12,6 +12,10 @@ import ParseCareKit
 import ParseSwift
 import os.log
 import WatchConnectivity
+import Foundation
+import UIKit
+
+// swiftlint:disable function_parameter_count
 
 class LoginViewModel: ObservableObject {
 
@@ -123,9 +127,22 @@ class LoginViewModel: ObservableObject {
                                     givenName: firstName,
                                     familyName: lastName)
         newPatient.userType = type
+
         let savedPatient = try await appDelegate.store.addPatient(newPatient)
-        try await appDelegate.store.populateSampleData()
-        try await appDelegate.healthKitStore.populateSampleData()
+
+        // Added code to create a contact for the respective signed up user
+        let newContact = OCKContact(id: remoteUUID.uuidString,
+                                    name: newPatient.name,
+                                    carePlanUUID: nil)
+
+        // This is new contact that has never been saved before
+        _ = try await appDelegate.store.addAnyContact(newContact)
+
+        // CarePlans, how would you do it here since you have a
+        // a saved patient uuid?
+        try await appDelegate.store.populateCarePlans(patientUUID: savedPatient.uuid)
+        try await appDelegate.store.populateSampleData(savedPatient.uuid)
+        try await appDelegate.healthKitStore.populateSampleData(savedPatient.uuid)
         appDelegate.parseRemote.automaticallySynchronizes = true
 
         // Post notification to sync
@@ -149,7 +166,8 @@ class LoginViewModel: ObservableObject {
                 username: String,
                 password: String,
                 firstName: String,
-                lastName: String) async {
+                lastName: String,
+                email: String) async {
         do {
             guard try await PCKUtility.isServerAvailable() else {
                 Logger.login.error("Server health is not \"ok\"")
@@ -159,6 +177,7 @@ class LoginViewModel: ObservableObject {
             // Set any properties you want saved on the user befor logging in.
             newUser.username = username.lowercased()
             newUser.password = password
+            newUser.email = email  // email property
             let user = try await newUser.signup()
             Logger.login.info("Parse signup successful: \(user)")
             let patient = try await savePatientAfterSignUp(type,
