@@ -15,6 +15,45 @@ import ParseCareKit
 
 extension OCKStore {
 
+    /**
+     Adds an `OCKAnyCarePlan`*asynchronously*  to `OCKStore` if it has not been added already.
+     - parameter carePlans: The array of `OCKAnyCarePlan`'s to be added to the `OCKStore`.
+     - parameter patientUUID: The uuid of the `OCKPatient` to tie to the `OCKCarePlan`. Defaults to nil.
+     - throws: An error if there was a problem adding the missing `OCKAnyCarePlan`'s.
+     - note: `OCKAnyCarePlan`'s that have an existing `id` will not be added and will not cause errors to be thrown.
+    */
+    func addCarePlansIfNotPresent(_ carePlans: [OCKAnyCarePlan], patientUUID: UUID? = nil) async throws {
+        let carePlanIdsToAdd = carePlans.compactMap { $0.id }
+
+        // Prepare query to see if Care Plan are already added
+        var query = OCKCarePlanQuery(for: Date())
+        query.ids = carePlanIdsToAdd
+        let foundCarePlans = try await self.fetchAnyCarePlans(query: query)
+        var carePlanNotInStore = [OCKAnyCarePlan]()
+        // Check results to see if there's a missing Care Plan
+        carePlans.forEach { potentialCarePlan in
+            if foundCarePlans.first(where: { $0.id == potentialCarePlan.id }) == nil {
+                // Check if can be casted to OCKCarePlan to add patientUUID
+                guard var mutableCarePlan = potentialCarePlan as? OCKCarePlan else {
+                    carePlanNotInStore.append(potentialCarePlan)
+                    return
+                }
+                mutableCarePlan.patientUUID = patientUUID
+                carePlanNotInStore.append(mutableCarePlan)
+            }
+        }
+
+        // Only add if there's a new Care Plan
+        if carePlanNotInStore.count > 0 {
+            do {
+                _ = try await self.addAnyCarePlans(carePlanNotInStore)
+                Logger.ockStore.info("Added Care Plans into OCKStore!")
+            } catch {
+                Logger.ockStore.error("Error adding Care Plans: \(error.localizedDescription)")
+            }
+        }
+    }
+
     func addTasksIfNotPresent(_ tasks: [OCKTask]) async throws {
         let taskIdsToAdd = tasks.compactMap { $0.id }
 
@@ -75,66 +114,71 @@ extension OCKStore {
     func populateSampleData() async throws {
 
         let thisMorning = Calendar.current.startOfDay(for: Date())
-        let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
-        let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo)!
-        let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo)!
+        // let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
+        let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 6, to: thisMorning)!
+        let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: thisMorning)!
 
         let schedule = OCKSchedule(composing: [
-            OCKScheduleElement(start: beforeBreakfast,
+            OCKScheduleElement(start: Calendar.current.date(byAdding: .hour, value: 6, to: beforeBreakfast)!,
                                end: nil,
                                interval: DateComponents(day: 1)),
 
-            OCKScheduleElement(start: afterLunch,
+            OCKScheduleElement(start: Calendar.current.date(byAdding: .hour, value: 6, to: afterLunch)!,
                                end: nil,
                                interval: DateComponents(day: 2))
         ])
 
-        var doxylamine = OCKTask(id: TaskID.doxylamine,
-                                 title: "Take Doxylamine",
+
+        var selfReflection = OCKTask(id: TaskID.selfReflection,       // doxylamine
+                                 title: "Journaling",
                                  carePlanUUID: nil,
                                  schedule: schedule)
-        doxylamine.instructions = "Take 25mg of doxylamine when you experience nausea."
-        doxylamine.asset = "pills.fill"
+        selfReflection.instructions = "Take sometime to recount and record the day so far."
+        selfReflection.asset = "book"
+        selfReflection.card = .checklist
 
-        let nauseaSchedule = OCKSchedule(composing: [
+        let sadCountSchedule = OCKSchedule(composing: [         // nausea
             OCKScheduleElement(start: beforeBreakfast,
                                end: nil,
                                interval: DateComponents(day: 1),
-                               text: "Anytime throughout the day",
+                               text: "Across the entire day",
                                targetValues: [], duration: .allDay)
             ])
 
-        var nausea = OCKTask(id: TaskID.nausea,
-                             title: "Track your nausea",
+        var sadCounter = OCKTask(id: TaskID.sadCounter,
+                             title: "Feeling Blue?",
                              carePlanUUID: nil,
-                             schedule: nauseaSchedule)
-        nausea.impactsAdherence = false
-        nausea.instructions = "Tap the button below anytime you experience nausea."
-        nausea.asset = "bed.double"
+                             schedule: sadCountSchedule)
+        sadCounter.impactsAdherence = false
+        sadCounter.instructions = "Tap the button below anytime you feel sad or down."
+        sadCounter.asset = "bed.double"
+        sadCounter.card = .button
 
-        let kegelElement = OCKScheduleElement(start: beforeBreakfast,
+        let kegelElement = OCKScheduleElement(start: afterLunch,    // kegel
                                               end: nil,
                                               interval: DateComponents(day: 2))
         let kegelSchedule = OCKSchedule(composing: [kegelElement])
         var kegels = OCKTask(id: TaskID.kegels,
-                             title: "Kegel Exercises",
+                             title: "Take Daily Medication",
                              carePlanUUID: nil,
                              schedule: kegelSchedule)
         kegels.impactsAdherence = true
-        kegels.instructions = "Perform kegel exercies"
+        kegels.instructions = "Take all necessary daily medications including vitamins and supplements."
+        kegels.card = .simple
 
-        let stretchElement = OCKScheduleElement(start: beforeBreakfast,
+        let stretchElement = OCKScheduleElement(start: beforeBreakfast,   // stretch
                                                 end: nil,
                                                 interval: DateComponents(day: 1))
         let stretchSchedule = OCKSchedule(composing: [stretchElement])
         var stretch = OCKTask(id: TaskID.stretch,
-                              title: "Stretch",
+                              title: "Workout",
                               carePlanUUID: nil,
                               schedule: stretchSchedule)
         stretch.impactsAdherence = true
-        stretch.asset = "figure.walk"
+        stretch.asset = "figure.run"
+        stretch.card = .instruction
 
-        try await addTasksIfNotPresent([nausea, doxylamine, kegels, stretch])
+        try await addTasksIfNotPresent([sadCounter, selfReflection, kegels, stretch])
 
         var contact1 = OCKContact(id: "jane",
                                   givenName: "Jane",

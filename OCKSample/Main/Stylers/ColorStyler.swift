@@ -12,7 +12,7 @@ import UIKit
 struct ColorStyler: OCKColorStyler {
     #if os(iOS)
     var label: UIColor {
-        .white
+        .black
     }
     var tertiaryLabel: UIColor {
         .gray
