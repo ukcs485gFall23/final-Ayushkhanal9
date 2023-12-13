@@ -16,22 +16,33 @@ Furthermore, Self Help buddy recognizes the importance of holistic well-being. I
 
 
 
+# Designed for Users
+Self Help Buddy' is an innovative self-help application designed to provide comprehensive support and guidance for individuals seeking personal growth and mental well-being. This app stands out in the crowded field of self-help tools by offering a wide range of features tailored to meet the diverse needs of its users.
+
+The app includes mood tracking, stress management techniques, and guided meditation sessions, catering to those who are looking to improve their mental health and emotional resilience. Additionally, it offers educational resources on topics like emotional intelligence, time management, and inter personal communication, making it an invaluable tool for personal development.
+
+'Self Help Buddy' is unique in its approach to personalization. Users can set specific goals, such as boosting self-confidence, managing anxiety, or building stronger relationships. The app then customizes its content and suggestions to align with these individual objectives, providing a more targeted and effective self-help experience.
+
 <img src="https://user-images.githubusercontent.com/8621344/101721031-06869500-3a75-11eb-9631-88927e9c8f00.png" width="300"> <img src="https://user-images.githubusercontent.com/8621344/101721111-33d34300-3a75-11eb-885e-4a6fc96dbd35.png" width="300"> <img src="https://user-images.githubusercontent.com/8621344/101721146-48afd680-3a75-11eb-955a-7848146a9d6f.png" width="300"><img src="https://user-images.githubusercontent.com/8621344/101721182-5cf3d380-3a75-11eb-99c9-bde40477acf3.png" width="300">
 
 **Similar to the [What's New in CareKit](https://developer.apple.com/videos/play/wwdc2020/10151/) WWDC20 video, this app syncs between data between iOS and an Apple Watch (setting the flag `isSyncingWithRemote` in `Constants.swift` to  `isSyncingWithRemote = false`. Different from the video, setting `isSyncingWithRemote = true` (default behavior) in the aforementioned file syncs iOS and watchOS to a Parse Server.**
 
 ParseCareKit synchronizes the following entities to Parse tables/classes using [Parse-Swift](https://github.com/netreconlab/Parse-Swift):
 
-- [x] OCKTask <-> Task
-- [x] OCKHealthKitTask <-> HealthKitTask 
-- [x] OCKOutcome <-> Outcome
+- [Yes] OCKTask <-> Task
+- [Yes] OCKHealthKitTask <-> HealthKitTask 
+- [Yes] OCKOutcome <-> Outcome
 - [x] OCKRevisionRecord.KnowledgeVector <-> Clock
 - [x] OCKPatient <-> Patient
-- [x] OCKCarePlan <-> CarePlan
-- [x] OCKContact <-> Contact
+- [Yes] OCKCarePlan <-> CarePlan
+- [Yes] OCKContact <-> Contact
+
+
+
+
+
 
 **Use at your own risk. There is no promise that this is HIPAA compliant and we are not responsible for any mishandling of your data**
-
 ## Setup Your Parse Server
 
 ### Heroku
