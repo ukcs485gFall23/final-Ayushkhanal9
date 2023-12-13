@@ -15,10 +15,10 @@ struct ColorStyler: OCKColorStyler {
         .black
     }
     var tertiaryLabel: UIColor {
-        .gray
+        .purple
     }
     var primaryLabel: UIColor {
-        .blue
+        .cyan
     }
 
     #endif
