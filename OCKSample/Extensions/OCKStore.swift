@@ -129,15 +129,37 @@ extension OCKStore {
         ])
 
 
-        var selfReflection = OCKTask(id: TaskID.selfReflection,       // doxylamine
-                                 title: "Journaling",
+        let mornElement = OCKScheduleElement(start: beforeBreakfast,
+                                                 end: nil,
+                                                 interval: DateComponents(day: 1),
+                                                 text: "Morning Check-in")
+         let afternoonElement = OCKScheduleElement(start: afterLunch,
+                                                end: nil,
+                                                interval: DateComponents(day: 2),
+                                                text: "Afternoon Check-in")
+         let eveningElement = OCKScheduleElement(start: Calendar.current.date(byAdding: .hour, value: 5, to: afterLunch)!,
+                                                end: nil,
+                                                interval: DateComponents(day: 1),
+                                                text: "Evening Check-in")
+         let journalSchedule = OCKSchedule(composing: [mornElement, afternoonElement, eveningElement])
+         var simpleJournal = OCKTask(id: TaskID.journaling,     // Daily Journaling
+                                       title: "Daily Journaling",
+                                       carePlanUUID: nil,
+                                       schedule: journalSchedule)
+         simpleJournal.card = .checklist
+         simpleJournal.instructions = "Periodic check-ins with yourself for grounding."
+         simpleJournal.asset = "book"
+        
+        
+        var selfReflection = OCKTask(id: TaskID.selfReflection,       // Meditation
+                                 title: "Meditation and Breath work",
                                  carePlanUUID: nil,
                                  schedule: schedule)
-        selfReflection.instructions = "Take sometime to recount and record the day so far."
+        selfReflection.instructions = "Taking a break from daily sctivites to clear your mind and center yourself."
         selfReflection.asset = "book"
-        selfReflection.card = .checklist
+        selfReflection.card = .instruction
 
-        let sadCountSchedule = OCKSchedule(composing: [         // nausea
+        let sadCountSchedule = OCKSchedule(composing: [         // Sadness Tracker
             OCKScheduleElement(start: beforeBreakfast,
                                end: nil,
                                interval: DateComponents(day: 1),
@@ -146,7 +168,7 @@ extension OCKStore {
             ])
 
         var sadCounter = OCKTask(id: TaskID.sadCounter,
-                             title: "Feeling Blue?",
+                             title: "Sad Counter",
                              carePlanUUID: nil,
                              schedule: sadCountSchedule)
         sadCounter.impactsAdherence = false
@@ -154,21 +176,38 @@ extension OCKStore {
         sadCounter.asset = "bed.double"
         sadCounter.card = .button
 
-        let kegelElement = OCKScheduleElement(start: afterLunch,    // kegel
+        let happyCountSchedule = OCKSchedule(composing: [         // Happiness Tracker
+            OCKScheduleElement(start: beforeBreakfast,
+                               end: nil,
+                               interval: DateComponents(day: 1),
+                               text: "Across the entire day",
+                               targetValues: [], duration: .allDay)
+            ])
+
+        var happyCounter = OCKTask(id: TaskID.happyCounter,
+                             title: "Happy Counter",
+                             carePlanUUID: nil,
+                             schedule: happyCountSchedule)
+        happyCounter.impactsAdherence = false
+        happyCounter.instructions = "Tap the button below anytime you feel happy or exicted."
+        happyCounter.asset = "bed.double"
+        happyCounter.card = .button
+        
+        let dailyMedsElement = OCKScheduleElement(start: afterLunch,    // meds
                                               end: nil,
-                                              interval: DateComponents(day: 2))
-        let kegelSchedule = OCKSchedule(composing: [kegelElement])
-        var kegels = OCKTask(id: TaskID.kegels,
+                                              interval: DateComponents(day: 1))
+        let dailyMedsSchedule = OCKSchedule(composing: [dailyMedsElement])
+        var dailyMeds = OCKTask(id: TaskID.medication,
                              title: "Take Daily Medication",
                              carePlanUUID: nil,
-                             schedule: kegelSchedule)
-        kegels.impactsAdherence = true
-        kegels.instructions = "Take all necessary daily medications including vitamins and supplements."
-        kegels.card = .simple
+                             schedule: dailyMedsSchedule)
+        dailyMeds.impactsAdherence = true
+        dailyMeds.instructions = "Take all necessary daily medications including vitamins and supplements."
+        dailyMeds.card = .simple
 
-        let stretchElement = OCKScheduleElement(start: beforeBreakfast,   // stretch
+        let stretchElement = OCKScheduleElement(start: beforeBreakfast,   // workout
                                                 end: nil,
-                                                interval: DateComponents(day: 1))
+                                                interval: DateComponents(day: 2))
         let stretchSchedule = OCKSchedule(composing: [stretchElement])
         var stretch = OCKTask(id: TaskID.stretch,
                               title: "Workout",
@@ -177,8 +216,8 @@ extension OCKStore {
         stretch.impactsAdherence = true
         stretch.asset = "figure.run"
         stretch.card = .instruction
-
-        try await addTasksIfNotPresent([sadCounter, selfReflection, kegels, stretch])
+        
+        try await addTasksIfNotPresent([dailyMeds, stretch, selfReflection, sadCounter, happyCounter, simpleJournal])
 
         var contact1 = OCKContact(id: "jane",
                                   givenName: "Jane",
