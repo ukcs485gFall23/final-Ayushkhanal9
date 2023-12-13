@@ -19,6 +19,7 @@ struct ProfileView: View {
     @CareStoreFetchRequest(query: ProfileViewModel.queryContacts()) private var contacts
     @StateObject private var viewModel = ProfileViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
+    @State private var isPresentingAddTask = false
 
     // MARK: Navigation
     @State var isPresentingAddTask = false
@@ -134,7 +135,5 @@ struct ProfileView: View {
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {
         ProfileView(loginViewModel: .init())
-            .accentColor(Color(TintColorKey.defaultValue))
-            .environment(\.careStore, Utility.createPreviewStore())
     }
 }
