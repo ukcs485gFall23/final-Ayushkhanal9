@@ -15,6 +15,27 @@ import ParseCareKit
 
 extension OCKStore {
 
+    @MainActor
+    class func getCarePlanUUIDs() async throws -> [CarePlanID: UUID] {
+        var results = [CarePlanID: UUID]()
+
+        guard let store = AppDelegateKey.defaultValue?.store else {
+            return results
+        }
+
+        var query = OCKCarePlanQuery(for: Date())
+        query.ids = [CarePlanID.health.rawValue,
+                     CarePlanID.checkIn.rawValue]
+
+        let foundCarePlans = try await store.fetchCarePlans(query: query)
+        // Populate the dictionary for all CarePlan's
+        CarePlanID.allCases.forEach { carePlanID in
+            results[carePlanID] = foundCarePlans
+                .first(where: { $0.id == carePlanID.rawValue })?.uuid
+        }
+        return results
+    }
+    
     /**
      Adds an `OCKAnyCarePlan`*asynchronously*  to `OCKStore` if it has not been added already.
      - parameter carePlans: The array of `OCKAnyCarePlan`'s to be added to the `OCKStore`.
@@ -109,14 +130,43 @@ extension OCKStore {
             }
         }
     }
+    
+    func populateCarePlans(patientUUID: UUID? = nil) async throws {
+        // xTODO: Add at least 2 CarePlans.
+        let checkInCarePlan = OCKCarePlan(id: CarePlanID.checkIn.rawValue,
+                                          title: "Check in Care Plan",
+                                          patientUUID: patientUUID)
+
+        // Mental Health Care Plan
+        let mentalHealthCarePlan = OCKCarePlan(id: CarePlanID.mentalHealth.rawValue,
+                                               title: "Mental Health Care Plan",
+                                               patientUUID: patientUUID)
+
+        // Physical Health Care Plan
+        let physicalHealthCarePlan = OCKCarePlan(id: CarePlanID.physicalHealth.rawValue,
+                                                  title: "Physical Health Care Plan",
+                                                  patientUUID: patientUUID)
+
+        try await addCarePlansIfNotPresent([checkInCarePlan,
+                                            mentalHealthCarePlan,
+                                            physicalHealthCarePlan],
+                                           patientUUID: patientUUID)
+    }
 
     // Adds tasks and contacts into the store
-    func populateSampleData() async throws {
+    func populateSampleData(_ patientUUID: UUID? = nil) async throws {
 
+        try await populateCarePlans(patientUUID: patientUUID)
+
+        let carePlanUUIDs = try await OCKStore.getCarePlanUUIDs()
+        
         let thisMorning = Calendar.current.startOfDay(for: Date())
-        // let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning)!
-        let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 6, to: thisMorning)!
-        let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: thisMorning)!
+        guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
+              let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo),
+              let afterLunch = Calendar.current.date(byAdding: .hour, value: 14, to: aFewDaysAgo) else {
+            Logger.ockStore.error("Could not unwrap calendar. Should never hit")
+            throw AppError.couldntBeUnwrapped
+        }
 
         let schedule = OCKSchedule(composing: [
             OCKScheduleElement(start: Calendar.current.date(byAdding: .hour, value: 6, to: beforeBreakfast)!,
@@ -144,7 +194,7 @@ extension OCKStore {
          let journalSchedule = OCKSchedule(composing: [mornElement, afternoonElement, eveningElement])
          var simpleJournal = OCKTask(id: TaskID.journaling,     // Daily Journaling
                                        title: "Daily Journaling",
-                                       carePlanUUID: nil,
+                                     carePlanUUID: carePlanUUIDs[CarePlanID.mentalHealth],
                                        schedule: journalSchedule)
          simpleJournal.card = .checklist
          simpleJournal.instructions = "Periodic check-ins with yourself for grounding."
@@ -153,7 +203,7 @@ extension OCKStore {
         
         var selfReflection = OCKTask(id: TaskID.selfReflection,       // Meditation
                                  title: "Meditation and Breath work",
-                                 carePlanUUID: nil,
+                                 carePlanUUID: carePlanUUIDs[CarePlanID.mentalHealth],
                                  schedule: schedule)
         selfReflection.instructions = "Taking a break from daily sctivites to clear your mind and center yourself."
         selfReflection.asset = "book"
@@ -169,7 +219,7 @@ extension OCKStore {
 
         var sadCounter = OCKTask(id: TaskID.sadCounter,
                              title: "Sad Counter",
-                             carePlanUUID: nil,
+                             carePlanUUID: carePlanUUIDs[CarePlanID.mentalHealth],
                              schedule: sadCountSchedule)
         sadCounter.impactsAdherence = false
         sadCounter.instructions = "Tap the button below anytime you feel sad or down."
@@ -186,7 +236,7 @@ extension OCKStore {
 
         var happyCounter = OCKTask(id: TaskID.happyCounter,
                              title: "Happy Counter",
-                             carePlanUUID: nil,
+                             carePlanUUID: carePlanUUIDs[CarePlanID.mentalHealth],
                              schedule: happyCountSchedule)
         happyCounter.impactsAdherence = false
         happyCounter.instructions = "Tap the button below anytime you feel happy or exicted."
@@ -199,7 +249,7 @@ extension OCKStore {
         let dailyMedsSchedule = OCKSchedule(composing: [dailyMedsElement])
         var dailyMeds = OCKTask(id: TaskID.medication,
                              title: "Take Daily Medication",
-                             carePlanUUID: nil,
+                             carePlanUUID: carePlanUUIDs[CarePlanID.health],
                              schedule: dailyMedsSchedule)
         dailyMeds.impactsAdherence = true
         dailyMeds.instructions = "Take all necessary daily medications including vitamins and supplements."
@@ -211,7 +261,7 @@ extension OCKStore {
         let stretchSchedule = OCKSchedule(composing: [stretchElement])
         var stretch = OCKTask(id: TaskID.stretch,
                               title: "Workout",
-                              carePlanUUID: nil,
+                              carePlanUUID: carePlanUUIDs[CarePlanID.physicalHealth],
                               schedule: stretchSchedule)
         stretch.impactsAdherence = true
         stretch.asset = "figure.run"
@@ -222,7 +272,7 @@ extension OCKStore {
         var contact1 = OCKContact(id: "jane",
                                   givenName: "Jane",
                                   familyName: "Daniels",
-                                  carePlanUUID: nil)
+                                  carePlanUUID: carePlanUUIDs[CarePlanID.health])
         contact1.asset = "JaneDaniels"
         contact1.title = "Family Practice Doctor"
         contact1.role = "Dr. Daniels is a family practice doctor with 8 years of experience."
@@ -240,7 +290,7 @@ extension OCKStore {
         }()
 
         var contact2 = OCKContact(id: "matthew", givenName: "Matthew",
-                                  familyName: "Reiff", carePlanUUID: nil)
+                                  familyName: "Reiff", carePlanUUID: carePlanUUIDs[CarePlanID.health])
         contact2.asset = "MatthewReiff"
         contact2.title = "OBGYN"
         contact2.role = "Dr. Reiff is an OBGYN with 13 years of experience."
