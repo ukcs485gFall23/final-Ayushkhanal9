@@ -61,8 +61,7 @@ class ProfileViewModel: ObservableObject {
     }
     @Published private(set) var error: Error?
     private(set) var alertMessage = "All changs saved successfully!"
-    private var contact: OCKContact? // TODO: need to publish contact updates like patient
-
+    private var contact: OCKContact?
     // MARK: Private read/write properties
     private var isSettingProfilePictureForFirstTime = true
 

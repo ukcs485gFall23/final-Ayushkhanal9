@@ -13,7 +13,7 @@ import os.log
 class CareKitTaskViewModel: ObservableObject {
 
     @Published var error: AppError?
-    
+
     private func setSchedule(userSchedule: TaskScheduleOptions) -> OCKSchedule {
         switch userSchedule {
         case .everyDay:
@@ -86,7 +86,7 @@ class CareKitTaskViewModel: ObservableObject {
                                             text: nil)
         }
     }
-    
+
     // MARK: Intents
     func addTask(
         _ title: String,

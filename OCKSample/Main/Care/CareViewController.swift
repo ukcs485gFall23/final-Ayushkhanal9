@@ -164,7 +164,7 @@ class CareViewController: OCKDailyPageViewController {
                 //                tipView.imageView.image = UIImage(named: "exercise.jpg")
                 //                tipView.customStyle = CustomStylerKey.defaultValue
                 //                listViewController.appendView(tipView, animated: false)
-                                
+                // swiftlint:disable:next line_length
                 let customFeaturedView = CustomFeaturedContentView.init(url: "https://healthline.com/nutrition/10-benefits-of-exercise",
                                                                         // swiftlint:disable:next line_length
                                                                         image: UIImage(named: "exercise.jpg"), tipTitle: tipTitle,
@@ -251,12 +251,12 @@ class CareViewController: OCKDailyPageViewController {
         case .grid:
             return [OCKGridTaskViewController(query: query,
                                               store: self.store)]
-        
+
         case .custom:
-            
+
             return [OCKInstructionsTaskViewController(query: query,
                                                       store: self.store)]
-            
+
         case .button:
             var cards = [UIViewController]()
 //            // dynamic gradient colors

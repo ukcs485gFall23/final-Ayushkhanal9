@@ -35,7 +35,7 @@ extension OCKStore {
         }
         return results
     }
-    
+
     /**
      Adds an `OCKAnyCarePlan`*asynchronously*  to `OCKStore` if it has not been added already.
      - parameter carePlans: The array of `OCKAnyCarePlan`'s to be added to the `OCKStore`.
@@ -130,7 +130,7 @@ extension OCKStore {
             }
         }
     }
-    
+
     func populateCarePlans(patientUUID: UUID? = nil) async throws {
         // xTODO: Add at least 2 CarePlans.
         let checkInCarePlan = OCKCarePlan(id: CarePlanID.checkIn.rawValue,
@@ -159,7 +159,7 @@ extension OCKStore {
         try await populateCarePlans(patientUUID: patientUUID)
 
         let carePlanUUIDs = try await OCKStore.getCarePlanUUIDs()
-        
+
         let thisMorning = Calendar.current.startOfDay(for: Date())
         guard let aFewDaysAgo = Calendar.current.date(byAdding: .day, value: -4, to: thisMorning),
               let beforeBreakfast = Calendar.current.date(byAdding: .hour, value: 8, to: aFewDaysAgo),
@@ -178,7 +178,6 @@ extension OCKStore {
                                interval: DateComponents(day: 2))
         ])
 
-
         let mornElement = OCKScheduleElement(start: beforeBreakfast,
                                                  end: nil,
                                                  interval: DateComponents(day: 1),
@@ -187,6 +186,7 @@ extension OCKStore {
                                                 end: nil,
                                                 interval: DateComponents(day: 2),
                                                 text: "Afternoon Check-in")
+        // swiftlint:disable:next line_length
          let eveningElement = OCKScheduleElement(start: Calendar.current.date(byAdding: .hour, value: 5, to: afterLunch)!,
                                                 end: nil,
                                                 interval: DateComponents(day: 1),
@@ -199,8 +199,7 @@ extension OCKStore {
          simpleJournal.card = .checklist
          simpleJournal.instructions = "Periodic check-ins with yourself for grounding."
          simpleJournal.asset = "book"
-        
-        
+
         var selfReflection = OCKTask(id: TaskID.selfReflection,       // Meditation
                                  title: "Meditation and Breath work",
                                  carePlanUUID: carePlanUUIDs[CarePlanID.mentalHealth],
@@ -242,7 +241,7 @@ extension OCKStore {
         happyCounter.instructions = "Tap the button below anytime you feel happy or exicted."
         happyCounter.asset = "bed.double"
         happyCounter.card = .button
-        
+
         let dailyMedsElement = OCKScheduleElement(start: afterLunch,    // meds
                                               end: nil,
                                               interval: DateComponents(day: 1))
@@ -266,7 +265,7 @@ extension OCKStore {
         stretch.impactsAdherence = true
         stretch.asset = "figure.run"
         stretch.card = .instruction
-        
+
         try await addTasksIfNotPresent([dailyMeds, stretch, selfReflection, sadCounter, happyCounter, simpleJournal])
 
         var contact1 = OCKContact(id: "jane",

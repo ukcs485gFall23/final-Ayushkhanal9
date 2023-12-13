@@ -92,7 +92,7 @@ struct ProfileView: View {
                 .background(Color(.red))
                 .cornerRadius(15)
             }
-            
+
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("My Contact") {

@@ -67,9 +67,8 @@ class MyContactViewController: OCKListViewController {
             self.contacts.removeAll()
             return
         }
-
         /*
-         TODO: How would you modify this query to only fetch the contact that belongs to this device?
+         
          
          Hint 1: There are multiple ways to do this. You can modify the query
          below which can work.
@@ -84,7 +83,7 @@ class MyContactViewController: OCKListViewController {
         query.sortDescriptors.append(.familyName(ascending: true))
         query.sortDescriptors.append(.givenName(ascending: true))
         query.ids = [personUUIDString]
-        
+
         self.contacts = try await store.fetchAnyContacts(query: query)
         self.displayContacts()
     }

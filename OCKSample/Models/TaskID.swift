@@ -20,6 +20,7 @@ enum TaskID {
     static let heartRate = "heartRate"
 
     static var ordered: [String] {
+        // swiftlint:disable:next line_length
         [Self.steps, Self.heartRate, Self.selfReflection, Self.medication, Self.stretch, Self.sadCounter, Self.happyCounter, Self.numProg, Self.journaling]
     }
 }
