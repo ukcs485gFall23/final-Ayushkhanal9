@@ -19,7 +19,6 @@ struct ProfileView: View {
     @CareStoreFetchRequest(query: ProfileViewModel.queryContacts()) private var contacts
     @StateObject private var viewModel = ProfileViewModel()
     @ObservedObject var loginViewModel: LoginViewModel
-    @State private var isPresentingAddTask = false
 
     // MARK: Navigation
     @State var isPresentingAddTask = false
