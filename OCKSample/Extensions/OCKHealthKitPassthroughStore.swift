@@ -46,7 +46,7 @@ extension OCKHealthKitPassthroughStore {
 
         let schedule = OCKSchedule.dailyAtTime(
             hour: 8, minutes: 0, start: Date(), end: nil, text: nil,
-            duration: .hours(12), targetValues: [OCKOutcomeValue(2000.0, units: "Steps")])
+            duration: .hours(12), targetValues: [OCKOutcomeValue(10000.0, units: "Steps")])
 
         var steps = OCKHealthKitTask(
             id: TaskID.steps,

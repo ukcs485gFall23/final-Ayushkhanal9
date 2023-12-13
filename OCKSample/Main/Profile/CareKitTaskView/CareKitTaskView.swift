@@ -17,6 +17,7 @@ struct CareKitTaskView: View {
     @StateObject var viewModel = CareKitTaskViewModel()
     @State var title = ""
     @State var instructions = ""
+    @State var taskSchedule: TaskScheduleOptions = .everyDay
     @State var selectedCard: CareKitCard = .button
 
     var body: some View {
@@ -32,12 +33,18 @@ struct CareKitTaskView: View {
                         Text(item.rawValue)
                     }
                 }
+                Picker("Task Schedule", selection: $taskSchedule) {
+                    ForEach(TaskScheduleOptions.allCases) { item in
+                        Text(item.rawValue)
+                    }
+                }
                 Section("Task") {
                     Button("Add") {
                         addTask {
                             await viewModel.addTask(
                                 title,
                                 instructions: instructions,
+                                schedule: taskSchedule,
                                 cardType: selectedCard
                             )
                         }
@@ -56,6 +63,7 @@ struct CareKitTaskView: View {
                             await viewModel.addHealthKitTask(
                                 title,
                                 instructions: instructions,
+                                schedule: taskSchedule,
                                 cardType: selectedCard
                             )
                         }

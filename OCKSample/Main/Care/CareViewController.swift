@@ -156,13 +156,20 @@ class CareViewController: OCKDailyPageViewController {
             if Calendar.current.isDate(date, inSameDayAs: Date()) {
                 // Add a non-CareKit view into the list
                 let tipTitle = "Benefits of exercising"
-                let tipText = "Learn how activity can promote a healthy pregnancy."
-                let tipView = TipView()
-                tipView.headerView.titleLabel.text = tipTitle
-                tipView.headerView.detailLabel.text = tipText
-                tipView.imageView.image = UIImage(named: "exercise.jpg")
-                tipView.customStyle = CustomStylerKey.defaultValue
-                listViewController.appendView(tipView, animated: false)
+                //                let tipText = "Learn how activity can promote a healthy pregnancy."
+                //                let tipView = TipView()
+                //                tipView.headerView.titleLabel.text = tipTitle
+                //                tipView.headerView.detailLabel.text = tipText
+                //                tipView.imageView.image = UIImage(named: "exercise.jpg")
+                //                tipView.customStyle = CustomStylerKey.defaultValue
+                //                listViewController.appendView(tipView, animated: false)
+                                
+                let customFeaturedView = CustomFeaturedContentView.init(url: "https://healthline.com/nutrition/10-benefits-of-exercise",
+                                                                        // swiftlint:disable:next line_length
+                                                                        image: UIImage(named: "exercise.jpg"), tipTitle: tipTitle,
+                                                                        color: #colorLiteral(red: 0.9998105168, green: 0.9952459931, blue: 0.8368335366, alpha: 1))
+                customFeaturedView.customStyle = CustomStylerKey.defaultValue
+                listViewController.appendView(customFeaturedView, animated: false)
             }
         }
 
@@ -240,6 +247,11 @@ class CareViewController: OCKDailyPageViewController {
             return [OCKChecklistTaskViewController(query: query,
                                                    store: self.store)]
 
+        case .grid:
+            return [OCKGridTaskViewController(query: query,
+                                              store: self.store)]
+            
+        
         case .button:
             var cards = [UIViewController]()
             // dynamic gradient colors
@@ -259,7 +271,7 @@ class CareViewController: OCKDailyPageViewController {
 
             let doxylamineDataSeries = OCKDataSeriesConfiguration(
                 taskID: task.id,
-                legendTitle: TaskID.doxylamine,
+                legendTitle: TaskID.selfReflection,
                 gradientStartColor: .systemGray2,
                 gradientEndColor: .systemGray,
                 markerSize: 10) { event in
@@ -282,8 +294,7 @@ class CareViewController: OCKDailyPageViewController {
              The event query passed into the initializer specifies that only
              today's log entries should be displayed by this log task view controller.
              */
-            let nauseaCard = OCKButtonLogTaskViewController(query: query,
-                                                            store: self.store)
+            let nauseaCard = OCKButtonLogTaskViewController(query: query, store: self.store)
             cards.append(nauseaCard)
             return cards
 
