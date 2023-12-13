@@ -3,14 +3,14 @@
 # CareKitSample+ParseCareKit
 ![Swift](https://img.shields.io/badge/swift-5.7-brightgreen.svg) ![Xcode 14.0+](https://img.shields.io/badge/xcode-14.0%2B-blue.svg) ![iOS 16.0+](https://img.shields.io/badge/iOS-16.0%2B-blue.svg) ![watchOS 9.0+](https://img.shields.io/badge/watchOS-9.0%2B-blue.svg) ![CareKit 3.0+](https://img.shields.io/badge/CareKit-3.0%2B-red.svg) ![ci](https://github.com/netreconlab/CareKitSample-ParseCareKit/workflows/ci/badge.svg?branch=main)
 
-#Introduction
+# Introduction
 I've developed a unique self-help application named 'Self Help Buddy,' aimed at providing comprehensive support and resources for personal development and mental well-being. Unlike traditional self-help apps that may focus on a single aspect of well-being, EmpowerYou offers a diverse range of tools and content to address various areas of a user's life.
 
 Self Help Buddy's core features include mood tracking, stress management techniques, guided meditation, and educational resources covering topics from emotional intelligence to effective communication skills. One of the standout aspects of this app is its personalized approach. Users can set their goals, whether it's improving self-esteem, managing anxiety, or developing better relationships, and the app tailors its content and recommendations accordingly.
 
 Furthermore, Self Help buddy recognizes the importance of holistic well-being. It integrates physical health tips and routines, understanding that physical health significantly impacts mental health. It also offers a community feature, where users can share their journeys and support each other, fostering a sense of connection and mutual growth.
 
-#Demo Video
+# Demo Video
 
 
 
