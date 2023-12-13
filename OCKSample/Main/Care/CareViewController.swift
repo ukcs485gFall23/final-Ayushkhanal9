@@ -31,6 +31,7 @@
 import CareKit
 import CareKitStore
 import CareKitUI
+import CareKitUtilities
 import os.log
 import SwiftUI
 import UIKit
@@ -163,7 +164,7 @@ class CareViewController: OCKDailyPageViewController {
                 //                tipView.imageView.image = UIImage(named: "exercise.jpg")
                 //                tipView.customStyle = CustomStylerKey.defaultValue
                 //                listViewController.appendView(tipView, animated: false)
-                                
+                // swiftlint:disable:next line_length
                 let customFeaturedView = CustomFeaturedContentView.init(url: "https://healthline.com/nutrition/10-benefits-of-exercise",
                                                                         // swiftlint:disable:next line_length
                                                                         image: UIImage(named: "exercise.jpg"), tipTitle: tipTitle,
@@ -250,44 +251,48 @@ class CareViewController: OCKDailyPageViewController {
         case .grid:
             return [OCKGridTaskViewController(query: query,
                                               store: self.store)]
-            
-        
+
+        case .custom:
+
+            return [OCKInstructionsTaskViewController(query: query,
+                                                      store: self.store)]
+
         case .button:
             var cards = [UIViewController]()
-            // dynamic gradient colors
-            let nauseaGradientStart = TintColorFlipKey.defaultValue
-            let nauseaGradientEnd = TintColorKey.defaultValue
-
-            let taskTitle = task.title ?? ""
-            // Create a plot comparing nausea to medication adherence.
-            let nauseaDataSeries = OCKDataSeriesConfiguration(
-                taskID: task.id,
-                legendTitle: taskTitle,
-                gradientStartColor: nauseaGradientStart,
-                gradientEndColor: nauseaGradientEnd,
-                markerSize: 10) { event in
-                    event.computeProgress(by: .summingOutcomeValues)
-                }
-
-            let doxylamineDataSeries = OCKDataSeriesConfiguration(
-                taskID: task.id,
-                legendTitle: TaskID.selfReflection,
-                gradientStartColor: .systemGray2,
-                gradientEndColor: .systemGray,
-                markerSize: 10) { event in
-                    event.computeProgress(by: .summingOutcomeValues)
-                }
-
-            let insightsCard = OCKCartesianChartViewController(
-                plotType: .bar,
-                selectedDate: date,
-                configurations: [nauseaDataSeries, doxylamineDataSeries],
-                store: self.store)
-
-            insightsCard.typedView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
-            insightsCard.typedView.headerView.detailLabel.text = "This Week"
-            insightsCard.typedView.headerView.accessibilityLabel = "Nausea & Doxylamine Intake, This Week"
-            cards.append(insightsCard)
+//            // dynamic gradient colors
+//            let nauseaGradientStart = TintColorFlipKey.defaultValue
+//            let nauseaGradientEnd = TintColorKey.defaultValue
+//
+//            let taskTitle = task.title ?? ""
+//            // Create a plot comparing nausea to medication adherence.
+//            let nauseaDataSeries = OCKDataSeriesConfiguration(
+//                taskID: task.id,
+//                legendTitle: taskTitle,
+//                gradientStartColor: nauseaGradientStart,
+//                gradientEndColor: nauseaGradientEnd,
+//                markerSize: 10) { event in
+//                    event.computeProgress(by: .summingOutcomeValues)
+//                }
+//
+//            let doxylamineDataSeries = OCKDataSeriesConfiguration(
+//                taskID: task.id,
+//                legendTitle: TaskID.selfReflection,
+//                gradientStartColor: .systemGray2,
+//                gradientEndColor: .systemGray,
+//                markerSize: 10) { event in
+//                    event.computeProgress(by: .summingOutcomeValues)
+//                }
+//
+//            let insightsCard = OCKCartesianChartViewController(
+//                plotType: .bar,
+//                selectedDate: date,
+//                configurations: [nauseaDataSeries, doxylamineDataSeries],
+//                store: self.store)
+//
+//            insightsCard.typedView.headerView.titleLabel.text = "Nausea & Doxylamine Intake"
+//            insightsCard.typedView.headerView.detailLabel.text = "This Week"
+//            insightsCard.typedView.headerView.accessibilityLabel = "Nausea & Doxylamine Intake, This Week"
+//            cards.append(insightsCard)
 
             /*
              Also create a card that displays a single event.

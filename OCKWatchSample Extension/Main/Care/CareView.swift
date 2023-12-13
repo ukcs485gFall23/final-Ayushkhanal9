@@ -15,7 +15,7 @@ import os.log
 struct CareView: View {
     private static var query: OCKEventQuery {
         var query = OCKEventQuery(for: Date())
-        query.taskIDs = [TaskID.stretch, TaskID.kegels]
+        query.taskIDs = [TaskID.stretch, TaskID.medication]
         return query
     }
     @CareStoreFetchRequest(query: query) private var events
@@ -23,7 +23,7 @@ struct CareView: View {
     var body: some View {
         ScrollView {
             ForEach(events) { event in
-                if event.result.task.id == TaskID.kegels {
+                if event.result.task.id == TaskID.medication {
                     SimpleTaskView(event: event)
                 } else if event.result.task.id == TaskID.stretch {
                     InstructionsTaskView(event: event)

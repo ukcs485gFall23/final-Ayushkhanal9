@@ -20,7 +20,7 @@ class CustomFeaturedContentView: OCKFeaturedContentView {
 
         self.delegate = self
     }
-
+    // swiftlint:disable:next line_length
     convenience init(url: String, imageOverlayStyle: UIUserInterfaceStyle = .unspecified, image: UIImage?, tipTitle: String, color: UIColor) {
         self.init(imageOverlayStyle: imageOverlayStyle)
 

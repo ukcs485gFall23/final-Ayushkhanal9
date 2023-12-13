@@ -42,7 +42,9 @@ extension OCKHealthKitPassthroughStore {
         }
     }
 
-    func populateSampleData() async throws {
+    func populateSampleData(_ patientUUID: UUID? = nil) async throws {
+
+        let carePlanUUIDs = try await OCKStore.getCarePlanUUIDs()
 
         let schedule = OCKSchedule.dailyAtTime(
             hour: 8, minutes: 0, start: Date(), end: nil, text: nil,
@@ -51,7 +53,7 @@ extension OCKHealthKitPassthroughStore {
         var steps = OCKHealthKitTask(
             id: TaskID.steps,
             title: "Steps",
-            carePlanUUID: nil,
+            carePlanUUID: carePlanUUIDs[CarePlanID.physicalHealth],
             schedule: schedule,
             healthKitLinkage: OCKHealthKitLinkage(
                 quantityIdentifier: .stepCount,
@@ -59,6 +61,26 @@ extension OCKHealthKitPassthroughStore {
                 unit: .count()))
         steps.asset = "figure.walk"
         steps.card = .numericProgress
-        try await addTasksIfNotPresent([steps])
+
+        let heartRateSchedule = OCKSchedule.dailyAtTime(
+                hour: 8, minutes: 0, start: Date(), end: nil, text: nil,
+                duration: .hours(12))
+
+        var heartRate = OCKHealthKitTask(
+            id: TaskID.heartRate,
+            title: "Heart Rate",
+            carePlanUUID: carePlanUUIDs[CarePlanID.physicalHealth],
+            schedule: heartRateSchedule,
+            healthKitLinkage: OCKHealthKitLinkage(
+                quantityIdentifier: .heartRate,
+                quantityType: .discrete,
+                unit: HKUnit.count().unitDivided(by: HKUnit.minute())))
+        heartRate.impactsAdherence = false
+        heartRate.card = .simple
+        heartRate.groupIdentifier = "BPM"
+        heartRate.instructions = "Heart rate check in."
+        heartRate.asset = "heart"
+
+        try await addTasksIfNotPresent([steps, heartRate])
     }
 }

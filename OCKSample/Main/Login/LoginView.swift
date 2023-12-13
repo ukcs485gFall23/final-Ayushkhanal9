@@ -34,12 +34,12 @@ struct LoginView: View {
     var body: some View {
         VStack {
             // Change the title to the name of your application
-            Text("IOS Healthcare App")
+            Text("Self Help Buddy")
                 .font(.largeTitle)
                 .foregroundColor(.black)
                 .padding()
             // Change this image to something that represents your application
-            Image("UKhealth")
+            Image("selfhelp")
                 .resizable()
                 .frame(width: 150, height: 150, alignment: .center)
                 .clipShape(Circle())
@@ -130,7 +130,7 @@ struct LoginView: View {
                         .frame(width: 300)
                 }
             })
-            .background(Color(.blue))
+            .background(Color(.green))
             .cornerRadius(15)
 
             Button(action: {
