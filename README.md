@@ -32,8 +32,7 @@ ParseCareKit synchronizes the following entities to Parse tables/classes using [
 - [Yes] OCKTask <-> Task
 - [Yes] OCKHealthKitTask <-> HealthKitTask 
 - [Yes] OCKOutcome <-> Outcome
-- [x] OCKRevisionRecord.KnowledgeVector <-> Clock
-- [x] OCKPatient <-> Patient
+- [Yes] OCKPatient <-> Patient
 - [Yes] OCKCarePlan <-> CarePlan
 - [Yes] OCKContact <-> Contact
 
@@ -43,6 +42,39 @@ ParseCareKit synchronizes the following entities to Parse tables/classes using [
 
 
 **Use at your own risk. There is no promise that this is HIPAA compliant and we are not responsible for any mishandling of your data**
+
+# Developed By
+- Corey Baker
+- Ayush Khanal
+
+# Check List
+[ X] Signup/Login screen tailored to app
+[ X] Signup/Login with email address
+[ X] Custom app logo
+[ X] Custom styling
+[ X] Add at least 5 new OCKTask/OCKHealthKitTasks to your app
+[ ] Have a minimum of 7 OCKTask/OCKHealthKitTasks in your app
+[ ] 3/7 of OCKTasks should have different OCKSchedules than what's in the original app
+[ X] Use at least 5/7 card below in your app
+[ X] InstructionsTaskView - typically used with a OCKTask
+ SimpleTaskView - typically used with a OCKTask
+[ ] Checklist - typically used with a OCKTask
+[X ] Button Log - typically used with a OCKTask
+ GridTaskView - typically used with a OCKTask
+[ X] NumericProgressTaskView (SwiftUI) - typically used with a OCKHealthKitTask
+[ ] LabeledValueTaskView (SwiftUI) - typically used with a OCKHealthKitTask
+[ X] Add the LinkView (SwiftUI) card to your app
+[ X] Replace the current TipView with a class with CustomFeaturedContentView that subclasses OCKFeaturedContentView. This card should have an initializer which takes any link
+[ ] Tailor the ResearchKit Onboarding to reflect your application
+[ ] Add tailored check-in ResearchKit survey to your app
+[ ] Add a new tab called "Insights" to MainTabView
+[X] Replace current ContactView with Searchable contact view
+[ ] Change the ProfileView to use a Form view
+[ ] Add at least two OCKCarePlan's and tie them to their respective OCKTask's and OCContact's
+
+#
+
+
 ## Setup Your Parse Server
 
 ### Heroku
